@@ -41,8 +41,8 @@ app.get("/home", (req, res) => {
 });
 
 // Catch all handler: serve React app for any non-API routes
-app.get("*", (req, res) => {
-  res.sendFile(path.join(process.cwd(), "public/index.html"));
+app.get("/*", (req, res) => {
+  res.send("Route not found");
 });
 
 // Start function with DB connection
