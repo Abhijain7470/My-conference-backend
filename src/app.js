@@ -1,11 +1,10 @@
 import express from "express";
 import { createServer } from "node:http";
-import path from "path";
-import { connectToSocket } from "./controllers/socketManager.js";
+import { connectToSocket } from "./controllers/socketmanager.js";
 import mongoose from "mongoose";
 import cors from "cors";
-import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes.js";
+import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();
@@ -16,16 +15,12 @@ const server = createServer(app);
 
 // Middlewares
 app.use(cors({
-  origin: process.env.NODE_ENV === "production" ? process.env.FRONTEND_URL : "http://localhost:3000",
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
   credentials: true
 }));
 app.use(express.json({ limit: "40kb" }));
 app.use(express.urlencoded({ limit: "40kb", extended: true }));
 
-// Serve static files from the React app build directory
-app.use(express.static(path.join(process.cwd(), "public")));
-
-// API routes
 app.use("/api/v1/users", userRoutes);
 
 
@@ -38,11 +33,6 @@ app.set("port", process.env.PORT || 8000);
 // Simple route
 app.get("/home", (req, res) => {
     return res.json({ message: "Hello World" });
-});
-
-// Catch all handler: serve React app for any non-API routes
-app.use((req, res) => {
-  res.sendFile(path.join(process.cwd(), "public/index.html"));
 });
 
 // Start function with DB connection
